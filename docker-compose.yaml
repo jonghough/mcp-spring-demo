@@ -1,0 +1,54 @@
+version: "3.8"
+
+services:
+  postgres:
+    image: postgres:16
+    container_name: hospital-postgres
+    environment:
+      POSTGRES_USER: hospital_user
+      POSTGRES_PASSWORD: secretpassword
+      POSTGRES_DB: hospitaldb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - hospital-net
+
+  flyway:
+    image: flyway/flyway:latest
+    container_name: flyway-migrator
+    depends_on:
+      - postgres
+    volumes:
+      - ./flyway/sql:/flyway/sql
+      - ./flyway/wait-and-migrate.sh:/flyway/wait-and-migrate.sh
+    entrypoint: [ "/bin/sh", "/flyway/wait-and-migrate.sh" ]
+    environment:
+      FLYWAY_URL: jdbc:postgresql://postgres:5432/hospitaldb
+      FLYWAY_USER: hospital_user
+      FLYWAY_PASSWORD: secretpassword
+      FLYWAY_SCHEMAS: hospital
+    networks:
+      - hospital-net
+    restart: "no"
+
+  # Optional: Spring Boot App (uncomment if you want to dockerize your app)
+  # app:
+  #   build: .
+  #   depends_on:
+  #     - postgres
+  #   environment:
+  #     SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/hospitaldb
+  #     SPRING_DATASOURCE_USERNAME: hospital_user
+  #     SPRING_DATASOURCE_PASSWORD: secretpassword
+  #   ports:
+  #     - "8080:8080"
+  #   networks:
+  #     - hospital-net
+
+volumes:
+  postgres_data:
+
+networks:
+  hospital-net:

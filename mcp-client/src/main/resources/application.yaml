@@ -1,0 +1,15 @@
+spring:
+  ai:
+    ollama:
+      base-url: http://localhost:11434
+      chat:
+        model: llama2
+    mcp:
+      client:
+        sse:
+          connections:
+            myMcpServer:
+              url: http://localhost:8080
+              sse-message-endpoint: /mcp/messages
+server:
+  port: 8081

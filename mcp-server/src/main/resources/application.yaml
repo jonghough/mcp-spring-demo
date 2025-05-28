@@ -1,0 +1,43 @@
+spring:
+  application.name: mcpserver
+  main.banner-mode: off
+  datasource:
+    url: jdbc:postgresql://localhost:5432/hospitaldb
+    username: hospital_user
+    password: secretpassword
+    driver-class-name: org.postgresql.Driver
+  ai:
+    tool:
+      enabled: true # no auto discovery
+    mcp:
+      server:
+        type: SYNC
+        name: webmvc-mcp-server
+        version: 1.0.0
+        request-timeout: 120
+        instructions: "This server provides weather information tools and resources"
+        sse-message-endpoint: /mcp/messages
+        sse-endpoint: /mcp
+        capabilities:
+          tool: true
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+  management:
+    endpoints:
+      web:
+        exposure:
+          include: info,health
+  # Optional: naming strategy (Spring Boot 2+ uses better default)
+  # jpa:
+  #   properties:
+  #     hibernate:
+  #       physical_naming_strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+    org.springframework.ai: DEBUG # Or DEBUG for more detailed logs

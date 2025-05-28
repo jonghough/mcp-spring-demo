@@ -18,6 +18,20 @@ patients and doctors and make appointments.
 To do this we expose multiple MCP Tools to the MCP Client that allows it to perform the desired database operations via
 natural language requests from a user.
 
+```mermaid
+graph TD
+    User[User]
+    ClientApp[Client App]
+    Ollama[Ollama]
+    ServerApp[Server App]
+    DB[Database]
+
+    User -->|HTTP: port 8081| ClientApp
+    ClientApp -->|HTTP: port 11434| Ollama
+    ClientApp -->|HTTP: port 8080| ServerApp
+    ServerApp --> DB
+```
+
 ## Setup
 
 Setup requires 4 components
